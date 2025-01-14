@@ -1,0 +1,12 @@
+DROP TYPE Promotions_typ;
+DROP TYPE OfertyWakacyjne_typ;
+DROP TYPE Kategorie_typ;
+DROP TYPE Atrakcja_typ;
+DROP TYPE OcenaHoteli_typ;
+DROP TYPE Hotel_typ;
+DROP TYPE Adresy_typ;
+DROP TYPE Adres_typ;
+DROP TYPE Ocena_typ;
+DROP TYPE OpisAtrakcja_typ;
+DROP TYPE OpisDestynacji_typ;
+DROP TYPE Uzytkownik_typ;

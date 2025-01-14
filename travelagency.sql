@@ -11,7 +11,7 @@ CREATE OR REPLACE TYPE Uzytkownik_typ AS OBJECT (
 );
 /
 ------------------------------------------------------------------------
--- ADRES_TYP oraz ADRESY_TYP (opakowanie z ID)
+-- ADRES_TYP 
 ------------------------------------------------------------------------
 CREATE OR REPLACE TYPE Adres_typ AS OBJECT (
     ulica         VARCHAR2(100),
@@ -29,7 +29,7 @@ CREATE OR REPLACE TYPE Adresy_typ AS OBJECT (
 );
 /
 ------------------------------------------------------------------------
--- OPISATRACJA_TYP (z nazwa i opis)
+-- OPISATRACJA_TYP 
 ------------------------------------------------------------------------
 CREATE OR REPLACE TYPE OpisAtrakcja_typ AS OBJECT (
   nazwa  VARCHAR2(200),
@@ -37,7 +37,7 @@ CREATE OR REPLACE TYPE OpisAtrakcja_typ AS OBJECT (
 );
 /
 ------------------------------------------------------------------------
--- OPISDESTYNACJI_TYP (kraj, region, opisLong)
+-- OPISDESTYNACJI_TYP 
 ------------------------------------------------------------------------
 CREATE OR REPLACE TYPE OpisDestynacji_typ AS OBJECT (
   kraj       VARCHAR2(100),
@@ -46,7 +46,7 @@ CREATE OR REPLACE TYPE OpisDestynacji_typ AS OBJECT (
 );
 /
 ------------------------------------------------------------------------
--- OCENA_TYP (wartosc, komentarz, data)
+-- OCENA_TYP 
 ------------------------------------------------------------------------
 CREATE OR REPLACE TYPE Ocena_typ AS OBJECT (
   wartosc    NUMBER,           
@@ -55,7 +55,7 @@ CREATE OR REPLACE TYPE Ocena_typ AS OBJECT (
 );
 /
 ------------------------------------------------------------------------
--- HOTEL_TYP (z Boolean "dla_doroslych")
+-- HOTEL_TYP 
 ------------------------------------------------------------------------
 CREATE OR REPLACE TYPE Hotel_typ AS OBJECT (
   hotelID          NUMBER,
@@ -68,7 +68,7 @@ CREATE OR REPLACE TYPE Hotel_typ AS OBJECT (
 );
 /
 ------------------------------------------------------------------------
--- OCENAHOTELI_TYP (przechowuje REF do Uzytkownik_typ)
+-- OCENAHOTELI_TYP
 ------------------------------------------------------------------------
 CREATE OR REPLACE TYPE OcenaHoteli_typ AS OBJECT (
   ocena_id         NUMBER,
@@ -79,7 +79,7 @@ CREATE OR REPLACE TYPE OcenaHoteli_typ AS OBJECT (
 );
 /
 ------------------------------------------------------------------------
--- ATRAKCJA_TYP (z REF do OcenaHoteli_typ, jeśli potrzebne)
+-- ATRAKCJA_TYP 
 ------------------------------------------------------------------------
 CREATE OR REPLACE TYPE Atrakcja_typ AS OBJECT (
   atrakcjaID       NUMBER,
@@ -88,7 +88,7 @@ CREATE OR REPLACE TYPE Atrakcja_typ AS OBJECT (
 );
 /
 ------------------------------------------------------------------------
--- KATEGORIE_TYP (Boolean: allIn, wakacjeZDziecmi, lastMinute)
+-- KATEGORIE_TYP 
 ------------------------------------------------------------------------
 CREATE OR REPLACE TYPE Kategorie_typ AS OBJECT (
   catId            NUMBER,
@@ -100,7 +100,7 @@ CREATE OR REPLACE TYPE Kategorie_typ AS OBJECT (
 );
 /
 ------------------------------------------------------------------------
--- OFERTYWAKACYJNE_TYP (z "duration" = endDate - startDate)
+-- OFERTYWAKACYJNE_TYP 
 ------------------------------------------------------------------------
 CREATE OR REPLACE TYPE OfertyWakacyjne_typ AS OBJECT (
   packID           NUMBER,
@@ -111,11 +111,11 @@ CREATE OR REPLACE TYPE OfertyWakacyjne_typ AS OBJECT (
   price            NUMBER(10,2),
   opis_pakietu     VARCHAR2(2000),
   avalibitystatus  NUMBER(1),
-  duration         NUMBER(5,2)    -- lub NUMBER(3) jeśli wystarczy całkowita liczba dni
+  duration         NUMBER(5,2)    
 );
 /
 ------------------------------------------------------------------------
--- PROMOTIONS_TYP (z REF do OfertyWakacyjne_typ)
+-- PROMOTIONS_TYP 
 ------------------------------------------------------------------------
 CREATE OR REPLACE TYPE Promotions_typ AS OBJECT (
   promoId       NUMBER,

@@ -113,19 +113,16 @@ DECLARE
   v_cat   REF Kategorie_typ;
   v_hotel REF Hotel_typ;
 BEGIN
-  -- Pobierz REF do kategorii o catId = 1
   SELECT REF(k) 
     INTO v_cat
     FROM Kategorie_tab k
    WHERE k.catId = 1;
 
-  -- Pobierz REF do hotelu o hotelID = 10
   SELECT REF(h)
     INTO v_hotel
     FROM Hotel_tab h
    WHERE h.hotelID = 10;
 
-  -- Wstawiamy ofertę do OfertyWakacyjne_tab
   INSERT INTO OfertyWakacyjne_tab
   VALUES (
     OfertyWakacyjne_typ(
@@ -137,7 +134,7 @@ BEGIN
       3999.99,             -- price
       'Wakacje w słonecznej Hiszpanii - 9 dni', 
       1,                   -- avalibitystatus (1 = dostępne)
-      9                    -- duration (liczba dni - przykładowo 9)
+      9                    -- duration (liczba dni)
     )
   );
 END;
@@ -147,7 +144,6 @@ END;
 DECLARE
   v_ref_uzytkownik REF Uzytkownik_typ;
 BEGIN
-  -- Pobieramy REF do użytkownika (np. user_id = 1)
   SELECT REF(u)
     INTO v_ref_uzytkownik
     FROM Uzytkownicy_tab u
@@ -179,7 +175,6 @@ BEGIN
     FROM OfertyWakacyjne_tab o
    WHERE o.packID = 501;
    
-  -- Teraz wstawiamy rekord do Promotions_tab
   INSERT INTO Promotions_tab
   VALUES (
     Promotions_typ(

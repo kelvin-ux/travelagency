@@ -87,3 +87,16 @@ CREATE TABLE Promotions_tab OF Promotions_typ
 )
 OBJECT IDENTIFIER IS PRIMARY KEY
 /
+------------------------------------------------------------------------
+---9. Tabela Rezerwacje_tab 
+------------------------------------------------------------------------
+
+CREATE TABLE Rezerwacje_tab OF Rezerwacja_typ
+(
+  CONSTRAINT pk_rezerwacje PRIMARY KEY (rezerwacja_id),
+  CONSTRAINT chk_data_rezerwacji_not_null CHECK (data_rezerwacji IS NOT NULL)
+)
+OBJECT IDENTIFIER IS PRIMARY KEY
+/
+
+COMMIT;

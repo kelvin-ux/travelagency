@@ -1,16 +1,4 @@
 ------------------------------------------------------------------------
--- UZYTKOWNIK_TYP
-------------------------------------------------------------------------
-CREATE OR REPLACE TYPE Uzytkownik_typ AS OBJECT (
-  uzytkownik_id    NUMBER,
-  imie             VARCHAR2(50),
-  nazwisko         VARCHAR2(50),
-  email            VARCHAR2(100),
-  telefon          VARCHAR2(20),
-  typ_uzytkownika  VARCHAR2(50)
-);
-/
-------------------------------------------------------------------------
 -- ADRES_TYP 
 ------------------------------------------------------------------------
 CREATE OR REPLACE TYPE Adres_typ AS OBJECT (
@@ -75,7 +63,8 @@ CREATE OR REPLACE TYPE OcenaHoteli_typ AS OBJECT (
   ref_uzytkownik   REF Uzytkownik_typ,  
   ocena            Ocena_typ,          
   opinia           VARCHAR2(1000),
-  data_oceny       DATE
+  data_oceny       DATE,
+  ref_oferta       REF OfertyWakacyjne_typ
 );
 /
 ------------------------------------------------------------------------
@@ -125,5 +114,33 @@ CREATE OR REPLACE TYPE Promotions_typ AS OBJECT (
   discount      NUMBER(3),
   startDate     DATE,
   endDate       DATE
+);
+/
+
+
+------------------------------------------------------------------------
+-- UZYTKOWNICY_TYP
+------------------------------------------------------------------------
+
+CREATE OR REPLACE TYPE Uzytkownik_typ AS OBJECT (
+  uzytkownik_id    NUMBER,
+  imie             VARCHAR2(50),
+  nazwisko         VARCHAR2(50),
+  email            VARCHAR2(100),
+  telefon          VARCHAR2(20),
+  typ_uzytkownika  VARCHAR2(50),
+  data_urodzenia   DATE         
+);
+/
+
+------------------------------------------------------------------------
+-- REZERWACJE_TYP
+------------------------------------------------------------------------
+
+CREATE OR REPLACE TYPE Rezerwacja_typ AS OBJECT (
+  rezerwacja_id    NUMBER,
+  ref_uzytkownik   REF Uzytkownik_typ,
+  ref_oferta       REF OfertyWakacyjne_typ,
+  data_rezerwacji  DATE
 );
 /

@@ -9,4 +9,4 @@ DROP TYPE Adres_typ;
 DROP TYPE Ocena_typ;
 DROP TYPE OpisAtrakcja_typ;
 DROP TYPE OpisDestynacji_typ;
-DROP TYPE Uzytkownik_typ;
+DROP TYPE Uzytkownik_typ FORCE;

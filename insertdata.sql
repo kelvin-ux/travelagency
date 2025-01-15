@@ -213,4 +213,129 @@ BEGIN
 END;
 /
 
+
+-- Dodajemy hotel (hotelID = 100) z oceną 4.6
+INSERT INTO Hotel_tab
+VALUES (
+  Hotel_typ(
+    100,
+    200,  -- ocenaId (potrzebny do powiązania z Oceny_hoteli_tab)
+    'Hotel Centralny 1',
+    'Hiszpania',
+    'Costa del Sol',
+    OpisDestynacji_typ('Hiszpania', 'Costa del Sol', 'Opis destynacji...'),
+    1
+  )
+);
+
+
+-- Dodajemy ocenę dla hoteluID = 100
+DECLARE
+  v_ref_uzytkownik REF Uzytkownik_typ;
+BEGIN
+  SELECT REF(u) INTO v_ref_uzytkownik FROM Uzytkownicy_tab u WHERE u.uzytkownik_id = 1;
+  
+  INSERT INTO Oceny_hoteli_tab
+  VALUES(
+    OcenaHoteli_typ(
+      200,           -- ocena_id
+      v_ref_uzytkownik,
+      Ocena_typ(4.6, 'Bardzo dobry hotel', SYSDATE),
+      'Przyjemny pobyt',
+      SYSDATE
+    )
+  );
+END;
+/
+
+
+DECLARE
+  v_cat   REF Kategorie_typ;
+  v_hotel REF Hotel_typ;
+BEGIN
+  SELECT REF(k) INTO v_cat FROM Kategorie_tab k WHERE k.catId = 1;
+  SELECT REF(h) INTO v_hotel FROM Hotel_tab h WHERE h.hotelID = 100;
+  
+  INSERT INTO OfertyWakacyjne_tab
+  VALUES (
+    OfertyWakacyjne_typ(
+      503, 
+      v_cat,          
+      v_hotel,        
+      DATE '2025-07-01',   -- startDate
+      DATE '2025-07-10',   -- endDate 
+      3999.99,             
+      'All Inclusive na Costa del Sol',
+      1,                   
+      9                    
+    )
+  );
+END;
+/
+COMMIT;
+
+INSERT INTO Hotel_tab
+VALUES (
+  Hotel_typ(
+    102,                     -- hotelID
+    200,                     -- ocenaId (będzie użyte do powiązania z oceną)
+    'Hotel Riviera', 
+    'Hiszpania', 
+    'Costa del Sol', 
+    OpisDestynacji_typ('Hiszpania', 'Costa del Sol', 'Luksusowy hotel nad morzem.'), 
+    1                        -- dla_doroslych
+  )
+);
+COMMIT;
+
+DECLARE
+  v_ref_uzytkownik REF Uzytkownik_typ;
+BEGIN
+  SELECT REF(u) INTO v_ref_uzytkownik FROM Uzytkownicy_tab u WHERE u.uzytkownik_id = 1;
+  
+  INSERT INTO Oceny_hoteli_tab
+  VALUES(
+    OcenaHoteli_typ(
+      201,                      -- ocena_id
+      v_ref_uzytkownik,         
+      Ocena_typ(4.7, 'Świetny hotel!', SYSDATE),  -- ocena > 4.5
+      'Bardzo polecam',
+      SYSDATE
+    )
+  );
+END;
+/
+COMMIT;
+
+INSERT INTO Kategorie_tab
+VALUES (
+  Kategorie_typ(3, 'All Inclusive', 'Wyżywienie i napoje w cenie', 1, 0, 0)
+);
+COMMIT;
+
+
+DECLARE
+  v_cat   REF Kategorie_typ;
+  v_hotel REF Hotel_typ;
+BEGIN
+  -- Pobranie referencji do kategorii All Inclusive i hotelu
+  SELECT REF(k) INTO v_cat FROM Kategorie_tab k WHERE k.catId = 3;
+  SELECT REF(h) INTO v_hotel FROM Hotel_tab h WHERE h.hotelID = 102;
+  
+  INSERT INTO OfertyWakacyjne_tab
+  VALUES (
+    OfertyWakacyjne_typ(
+      702,                     -- packID (wybierz unikalne ID)
+      v_cat,                   
+      v_hotel,                 
+      DATE '2025-08-01',       -- startDate
+      DATE '2025-08-10',       -- endDate (9 dni)
+      4000,                    -- cena w zakresie 3000-5000
+      'Luksusowy pobyt All Inclusive nad morzem.',
+      1,                       -- avalibitystatus
+      9                        -- duration
+    )
+  );
+END;
+/
 COMMIT;

@@ -5,7 +5,7 @@ CREATE TABLE Uzytkownicy_tab OF Uzytkownik_typ
 (
     CONSTRAINT pk_uzytkownicy PRIMARY KEY (uzytkownik_id)
 )
-OBJECT IDENTIFIER IS PRIMARY KEY;
+OBJECT IDENTIFIER IS PRIMARY KEY
 /
 
 ------------------------------------------------------------------------
@@ -15,7 +15,7 @@ CREATE TABLE Adresy_tab OF Adresy_typ
 (
     CONSTRAINT pk_adresy PRIMARY KEY (adresID)
 )
-OBJECT IDENTIFIER IS PRIMARY KEY;
+OBJECT IDENTIFIER IS PRIMARY KEY
 /
 
 ------------------------------------------------------------------------
@@ -25,7 +25,7 @@ CREATE TABLE Hotel_tab OF Hotel_typ
 (
     CONSTRAINT pk_hotel PRIMARY KEY (hotelID)
 )
-OBJECT IDENTIFIER IS PRIMARY KEY;
+OBJECT IDENTIFIER IS PRIMARY KEY
 /
 
 ------------------------------------------------------------------------
@@ -37,7 +37,7 @@ CREATE TABLE Oceny_hoteli_tab OF OcenaHoteli_typ
     
     CONSTRAINT pk_oceny_hoteli PRIMARY KEY (ocena_id)
 )
-OBJECT IDENTIFIER IS PRIMARY KEY;
+OBJECT IDENTIFIER IS PRIMARY KEY
 /
 
 ------------------------------------------------------------------------
@@ -49,7 +49,7 @@ CREATE TABLE Atrakcja_tab OF Atrakcja_typ
     
     CONSTRAINT pk_atrakcja PRIMARY KEY (atrakcjaID)
 )
-OBJECT IDENTIFIER IS PRIMARY KEY;
+OBJECT IDENTIFIER IS PRIMARY KEY
 /
 
 ------------------------------------------------------------------------
@@ -59,7 +59,7 @@ CREATE TABLE Kategorie_tab OF Kategorie_typ
 (
     CONSTRAINT pk_kategorie PRIMARY KEY (catId)
 )
-OBJECT IDENTIFIER IS PRIMARY KEY;
+OBJECT IDENTIFIER IS PRIMARY KEY
 /
 
 ------------------------------------------------------------------------
@@ -73,7 +73,7 @@ CREATE TABLE OfertyWakacyjne_tab OF OfertyWakacyjne_typ
     
     CONSTRAINT pk_oferty PRIMARY KEY (packID)
 )
-OBJECT IDENTIFIER IS PRIMARY KEY;
+OBJECT IDENTIFIER IS PRIMARY KEY
 /
 
 ------------------------------------------------------------------------
@@ -85,5 +85,5 @@ CREATE TABLE Promotions_tab OF Promotions_typ
     
     CONSTRAINT pk_promotions PRIMARY KEY (promoId)
 )
-OBJECT IDENTIFIER IS PRIMARY KEY;
+OBJECT IDENTIFIER IS PRIMARY KEY
 /

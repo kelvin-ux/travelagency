@@ -1,0 +1,105 @@
+classDiagram
+    class Uzytkownik {
+        +int uzytkownikId
+        +String imie
+        +String nazwisko
+        +String email
+        +String telefon
+        +String typUzytkownika
+        +Adres adres
+    }
+
+    class Adres {
+        +String ulica
+        +String nrDomu
+        +String nrMieszkania
+        +String kodPocztowy
+        +String miasto
+        +String kraj
+    }
+
+
+    class OpisAtrakcja {
+        +String nazwa
+        +String opis
+    }
+
+    class OpisDestynacji {
+        +String kraj
+        +String region
+        +String opisLong
+    }
+
+    class Ocena {
+        +int wartosc
+        +String komentarz
+        +Date data
+    }
+
+    class Hotel {
+        +int hotelId
+        +int ocenaId
+        +String lokalizacja
+        +String kraj
+        +String region
+        +OpisDestynacji opisDestynacji
+        +boolean dlaDoroslych
+        +Adres adres
+    }
+
+    class OcenaHoteli {
+        +int ocenaId
+        +Uzytkownik refUzytkownik
+        +Ocena ocena
+        +String opinia
+        +Date dataOceny
+    }
+
+    class Atrakcja {
+        +int atrakcjaId
+        +OcenaHoteli refOcena
+        +OpisAtrakcja opisAtrakcji
+    }
+
+    class Kategorie {
+        +int catId
+        +String name
+        +String opis
+        +boolean allIn
+        +boolean wakacjeZDziecmi
+        +boolean lastMinute
+    }
+
+    class OfertyWakacyjne {
+        +int packId
+        +Kategorie refCat
+        +Hotel refHotel
+        +Date startDate
+        +Date endDate
+        +double price
+        +String opisPakietu
+        +boolean avalibityStatus
+        +double duration
+    }
+
+    class Promotions {
+        +int promoId
+        +OfertyWakacyjne refPackage
+        +String promoName
+        +String promoDesc
+        +double discount
+        +Date startDate
+        +Date endDate
+    }
+
+    Uzytkownik "1" --> "0..*" OcenaHoteli : "writes"
+    OcenaHoteli "0..*" --> "1" Hotel : "rates"
+    Hotel "0..*" --> "0..*" Atrakcja : "has"
+    Hotel "1" --> "0..*" OfertyWakacyjne : "offers"
+    OfertyWakacyjne "0..*" --> "1" Kategorie : "belongs to"
+    OfertyWakacyjne "0..*" --> "1" Promotions : "has"
+    Atrakcja "0..*" --> "1" OpisAtrakcja : "describes"
+    Hotel "1" --> "1" OpisDestynacji : "has"
+    OcenaHoteli "0..*" --> "1" Ocena : "includes"
+    Uzytkownik "1" --> "0..*" Adres : "has"
+    Hotel "1" --> "0..*" Adres : "has"

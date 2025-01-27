@@ -1,12 +1,18 @@
-DROP TYPE Promotions_typ;
-DROP TYPE OfertyWakacyjne_typ;
-DROP TYPE Kategorie_typ;
-DROP TYPE Atrakcja_typ;
-DROP TYPE OcenaHoteli_typ;
-DROP TYPE Hotel_typ;
-DROP TYPE Adresy_typ;
-DROP TYPE Adres_typ;
-DROP TYPE Ocena_typ;
-DROP TYPE OpisAtrakcja_typ;
-DROP TYPE OpisDestynacji_typ;
-DROP TYPE Uzytkownik_typ FORCE;
+BEGIN
+    EXECUTE IMMEDIATE 'DROP TYPE Rezerwacja_typ FORCE';
+    EXECUTE IMMEDIATE 'DROP TYPE Uzytkownik_typ FORCE';
+    EXECUTE IMMEDIATE 'DROP TYPE Promotions_typ FORCE';
+    EXECUTE IMMEDIATE 'DROP TYPE OfertyWakacyjne_typ FORCE';
+    EXECUTE IMMEDIATE 'DROP TYPE Kategorie_typ FORCE';
+    EXECUTE IMMEDIATE 'DROP TYPE ListaAtrakcje_typ FORCE';
+    EXECUTE IMMEDIATE 'DROP TYPE Atrakcja_typ FORCE';
+    EXECUTE IMMEDIATE 'DROP TYPE OcenaHoteli_typ FORCE';
+    EXECUTE IMMEDIATE 'DROP TYPE Hotel_typ FORCE';
+    EXECUTE IMMEDIATE 'DROP TYPE Ocena_typ FORCE';
+    EXECUTE IMMEDIATE 'DROP TYPE OpisDestynacji_typ FORCE';
+    EXECUTE IMMEDIATE 'DROP TYPE Adresy_typ FORCE';
+EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
+END;
+/

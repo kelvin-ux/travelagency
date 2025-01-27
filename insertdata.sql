@@ -231,8 +231,8 @@ INSERT INTO OfertyWakacyjne_tab VALUES (
         5, -- packID
         (SELECT REF(k) FROM Kategorie_tab k WHERE k.catId = 3), -- ref_cat
         (SELECT REF(h) FROM Hotele_tab h WHERE h.hotelID = 5), -- ref_hotel
-        TO_DATE('2024-09-01', 'YYYY-MM-DD'), -- startDate
-        TO_DATE('2024-09-07', 'YYYY-MM-DD'), -- endDate
+        TO_DATE('2025-09-01', 'YYYY-MM-DD'), -- startDate
+        TO_DATE('2025-09-07', 'YYYY-MM-DD'), -- endDate
         2200.00, -- price
         'Odkryj historiê Berlina podczas tej wyj¹tkowej wycieczki.', -- opis_pakietu
         1, -- avalibitystatus
@@ -323,70 +323,68 @@ INSERT INTO Rezerwacje_tab VALUES (
 --OCENY
 -- Dodanie kilku ocen do tabeli OcenyHoteli_tab
 
--- Ocena 1: U¿ytkownik 1 dla hotelu 2
+-- Ocena 1: U¿ytkownik 1 dla hotelu 2 -- POWINNO DZIA£AÆ
 INSERT INTO OcenyHoteli_tab VALUES (
     OcenaHoteli_typ(
         1, -- ocena_id
         (SELECT REF(u) FROM Uzytkownicy_tab u WHERE u.uzytkownik_id = 1), -- ref_uzytkownik
         (SELECT REF(h) FROM Hotele_tab h WHERE h.hotelID = 2), -- ref_hotel
         Ocena_typ(
-            9, -- wartosc
+            5, -- wartosc
             'Bardzo komfortowy hotel z doskona³¹ obs³ug¹.', -- komentarz
             TO_DATE('2024-07-20', 'YYYY-MM-DD') -- data oceny
         )
     )
 );
-
--- Ocena 2: U¿ytkownik 4 dla hotelu 1
+-- Ocena 2: U¿ytkownik 4 dla hotelu 1 -- NIE POWINNO DZIA£AÆ 
 INSERT INTO OcenyHoteli_tab VALUES (
     OcenaHoteli_typ(
         2, -- ocena_id
         (SELECT REF(u) FROM Uzytkownicy_tab u WHERE u.uzytkownik_id = 4), -- ref_uzytkownik
         (SELECT REF(h) FROM Hotele_tab h WHERE h.hotelID = 1), -- ref_hotel
         Ocena_typ(
-            8, -- wartosc
+            3, -- wartosc
             'Hotel ma œwietne po³o¿enie, ale pokoje mog³yby byæ wiêksze.', -- komentarz
             TO_DATE('2024-06-15', 'YYYY-MM-DD') -- data oceny
         )
     )
 );
 
--- Ocena 3: U¿ytkownik 2 dla hotelu 5
+-- Ocena 3: U¿ytkownik 2 dla hotelu 3 -- POWINNO DZIA£AÆ
 INSERT INTO OcenyHoteli_tab VALUES (
     OcenaHoteli_typ(
         3, -- ocena_id
         (SELECT REF(u) FROM Uzytkownicy_tab u WHERE u.uzytkownik_id = 2), -- ref_uzytkownik
-        (SELECT REF(h) FROM Hotele_tab h WHERE h.hotelID = 5), -- ref_hotel
+        (SELECT REF(h) FROM Hotele_tab h WHERE h.hotelID = 3), -- ref_hotel
         Ocena_typ(
-            10, -- wartosc
+            4, -- wartosc
             'Najlepszy hotel, w którym kiedykolwiek by³em! Wszystko na najwy¿szym poziomie.', -- komentarz
             TO_DATE('2024-05-10', 'YYYY-MM-DD') -- data oceny
         )
     )
 );
-
--- Ocena 4: U¿ytkownik 6 dla hotelu 3
+-- Ocena 4: U¿ytkownik 7 dla hotelu 4 --POWINNO DZIA£AÆ
 INSERT INTO OcenyHoteli_tab VALUES (
     OcenaHoteli_typ(
         4, -- ocena_id
-        (SELECT REF(u) FROM Uzytkownicy_tab u WHERE u.uzytkownik_id = 6), -- ref_uzytkownik
-        (SELECT REF(h) FROM Hotele_tab h WHERE h.hotelID = 3), -- ref_hotel
+        (SELECT REF(u) FROM Uzytkownicy_tab u WHERE u.uzytkownik_id = 7), -- ref_uzytkownik
+        (SELECT REF(h) FROM Hotele_tab h WHERE h.hotelID = 4), -- ref_hotel
         Ocena_typ(
-            7, -- wartosc
+            4, -- wartosc
             'Przyjazny personel, ale restauracja by³a nieco g³oœna.', -- komentarz
             TO_DATE('2024-08-05', 'YYYY-MM-DD') -- data oceny
         )
     )
 );
 
--- Ocena 5: U¿ytkownik 9 dla hotelu 4
+-- Ocena 5: U¿ytkownik 1 dla hotelu 3
 INSERT INTO OcenyHoteli_tab VALUES (
     OcenaHoteli_typ(
         5, -- ocena_id
-        (SELECT REF(u) FROM Uzytkownicy_tab u WHERE u.uzytkownik_id = 9), -- ref_uzytkownik
-        (SELECT REF(h) FROM Hotele_tab h WHERE h.hotelID = 4), -- ref_hotel
+        (SELECT REF(u) FROM Uzytkownicy_tab u WHERE u.uzytkownik_id = 1), -- ref_uzytkownik
+        (SELECT REF(h) FROM Hotele_tab h WHERE h.hotelID = 3), -- ref_hotel
         Ocena_typ(
-            6, -- wartosc
+            4, -- wartosc
             'Hotel oferuje œwietne udogodnienia, ale basen by³ zamkniêty podczas mojego pobytu.', -- komentarz
             TO_DATE('2024-09-12', 'YYYY-MM-DD') -- data oceny
         )

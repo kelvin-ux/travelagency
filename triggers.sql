@@ -1,57 +1,21 @@
-CREATE OR REPLACE TRIGGER trg_check_reservation_date
-BEFORE INSERT ON Rezerwacje_tab
+--TRIGGER SPRAWDZAJ¥CY POPRAWNOŒÆ WYSTAWIANIA OCENY PRZEZ U¯YTKOWNIKA
+CREATE OR REPLACE TRIGGER trg_check_ocena_hoteli
+BEFORE INSERT OR UPDATE ON OcenyHoteli_tab
 FOR EACH ROW
 DECLARE
-    v_startDate DATE;
-    v_endDate   DATE;
+    v_count NUMBER;
 BEGIN
-    SELECT o.startDate, o.endDate
-      INTO v_startDate, v_endDate
-      FROM OfertyWakacyjne_tab o
-     WHERE REF(o) = :NEW.ref_oferta;
-
-    IF :NEW.data_rezerwacji < v_startDate OR :NEW.data_rezerwacji > v_endDate THEN
-        RAISE_APPLICATION_ERROR(-20001, 'Data rezerwacji poza terminem oferty.');
-    END IF;
-END;
-/
-
-
-CREATE OR REPLACE TRIGGER trg_check_user_age
-BEFORE INSERT ON Rezerwacje_tab
-FOR EACH ROW
-DECLARE
-    v_birthdate DATE;
-    v_age       NUMBER;
-BEGIN
-    SELECT u.data_urodzenia 
-      INTO v_birthdate 
-      FROM Uzytkownicy_tab u 
-     WHERE REF(u) = :NEW.ref_uzytkownik;
-
-
-    v_age := TRUNC(MONTHS_BETWEEN(SYSDATE, v_birthdate) / 12);
-
-    IF v_age < 18 THEN
-      RAISE_APPLICATION_ERROR(-20002, 'UÅ¼ytkownik musi mieÄ‡ co najmniej 18 lat, aby dokonaÄ‡ rezerwacji.');
-    END IF;
-END;
-/
-
-
-CREATE OR REPLACE TRIGGER trg_check_rating_date
-BEFORE INSERT ON Oceny_hoteli_tab
-FOR EACH ROW
-DECLARE
-    v_endDate DATE;
-BEGIN
-    SELECT o.endDate 
-      INTO v_endDate
-      FROM OfertyWakacyjne_tab o
-     WHERE REF(o) = :NEW.ref_oferta;
-
-    IF SYSDATE <= v_endDate THEN
-       RAISE_APPLICATION_ERROR(-20003, 'Ocena moÅ¼e byÄ‡ dodana dopiero po zakoÅ„czonej podrÃ³Å¼y.');
+    -- Sprawdzenie, czy u¿ytkownik ma zakoñczon¹ rezerwacjê na dany hotel
+    SELECT COUNT(*)
+    INTO v_count
+    FROM Rezerwacje_tab r
+    JOIN OfertyWakacyjne_tab o ON r.ref_oferta = REF(o)
+    WHERE r.ref_uzytkownik = :NEW.ref_uzytkownik
+      AND o.ref_hotel = :NEW.ref_hotel
+      AND o.endDate < SYSDATE;
+      
+    IF v_count = 0 THEN
+        RAISE_APPLICATION_ERROR(-20001, 'U¿ytkownik musi mieæ zakoñczon¹ rezerwacjê na ten hotel, aby wystawiæ ocenê.');
     END IF;
 END;
 /

@@ -32,8 +32,7 @@ CREATE OR REPLACE TYPE Hotel_typ AS OBJECT (
   region           VARCHAR2(100),
   opisLong         CLOB,
   dla_doroslych    NUMBER(1),
-  adres            Adresy_typ,
-  srednia_ocena    NUMBER(3,2)
+  adres            Adresy_typ
 );
 /
 ------------------------------------------------------------------------

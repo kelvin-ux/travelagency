@@ -24,8 +24,7 @@ BEGIN
             'Île-de-France',
             'Luksusowy hotel po³o¿ony w sercu Pary¿a, z widokiem na Wie¿ê Eiffla.',
             1,
-            Adresy_typ(1, 'Champs-Élysées', '101', NULL, '75008', 'Pary¿', 'Francja'),
-            NULL -- Brak œredniej oceny na pocz¹tku
+            Adresy_typ(1, 'Champs-Élysées', '101', NULL, '75008', 'Pary¿', 'Francja')
         )
     );
 
@@ -38,8 +37,7 @@ BEGIN
             'Greater London',
             'Hotel w centrum Londynu, blisko g³ównych atrakcji turystycznych.',
             1,
-            Adresy_typ(2, 'Oxford Street', '200', NULL, 'W1D 1NU', 'Londyn', 'Wielka Brytania'),
-            NULL
+            Adresy_typ(2, 'Oxford Street', '200', NULL, 'W1D 1NU', 'Londyn', 'Wielka Brytania')
         )
     );
 
@@ -52,8 +50,7 @@ BEGIN
             'New York',
             'Hotel w Nowym Jorku z widokiem na Central Park.',
             1,
-            Adresy_typ(3, 'Fifth Avenue', '350', NULL, '10001', 'Nowy Jork', 'USA'),
-            NULL
+            Adresy_typ(3, 'Fifth Avenue', '350', NULL, '10001', 'Nowy Jork', 'USA')
         )
     );
 
@@ -66,8 +63,7 @@ BEGIN
             'Katalonia',
             'Hotel w Barcelonie w pobli¿u pla¿y i s³ynnej La Rambla.',
             0,
-            Adresy_typ(4, 'La Rambla', '45', '2B', '08002', 'Barcelona', 'Hiszpania'),
-            NULL
+            Adresy_typ(4, 'La Rambla', '45', '2B', '08002', 'Barcelona', 'Hiszpania')
         )
     );
 
@@ -80,8 +76,7 @@ BEGIN
             'Berlin',
             'Nowoczesny hotel w centrum Berlina, blisko Bramy Brandenburskiej.',
             1,
-            Adresy_typ(5, 'Kurfürstendamm', '180', '4C', '10719', 'Berlin', 'Niemcy'),
-            NULL
+            Adresy_typ(5, 'Kurfürstendamm', '180', '4C', '10719', 'Berlin', 'Niemcy')
         )
     );
 END;
@@ -377,7 +372,7 @@ INSERT INTO OcenyHoteli_tab VALUES (
     )
 );
 
--- Ocena 5: U¿ytkownik 1 dla hotelu 3
+-- Ocena 5: U¿ytkownik 1 dla hotelu 3 -- NIE POWINNO DZIA£AÆ
 INSERT INTO OcenyHoteli_tab VALUES (
     OcenaHoteli_typ(
         5, -- ocena_id

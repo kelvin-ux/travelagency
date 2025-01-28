@@ -35,6 +35,22 @@ CREATE OR REPLACE TYPE Hotel_typ AS OBJECT (
   adres            Adresy_typ
 );
 /
+
+------------------------------------------------------------------------
+-- UZYTKOWNICY_TYP
+------------------------------------------------------------------------
+
+CREATE OR REPLACE TYPE Uzytkownik_typ AS OBJECT (
+  uzytkownik_id    NUMBER,
+  imie             VARCHAR2(50),
+  nazwisko         VARCHAR2(50),
+  email            VARCHAR2(100),
+  telefon          VARCHAR2(20),
+  typ_uzytkownika  VARCHAR2(50),
+  data_urodzenia   DATE         
+);
+/
+
 ------------------------------------------------------------------------
 -- OCENAHOTELI_TYP
 ------------------------------------------------------------------------
@@ -79,39 +95,24 @@ CREATE OR REPLACE TYPE OfertyWakacyjne_typ AS OBJECT (
   ref_hotel        REF Hotel_typ,
   startDate        DATE,
   endDate          DATE,
-  price            NUMBER(10,2),
+  price            NUMBER(10,2),      -- aktualna cena (po zniżce)
+  original_price   NUMBER(10,2),      -- NOWE POLE: oryginalna cena (przed zniżką)
   opis_pakietu     VARCHAR2(2000),
   avalibitystatus  NUMBER(1),
   duration         NUMBER(5,2),
   atrakcje         ListaAtrakcje_typ
 );
-/
 ------------------------------------------------------------------------
 -- PROMOTIONS_TYP 
 ------------------------------------------------------------------------
 CREATE OR REPLACE TYPE Promotions_typ AS OBJECT (
-  promoId       NUMBER,
-  ref_package   REF OfertyWakacyjne_typ,
-  promoName     VARCHAR2(100),
-  promoDesc     VARCHAR2(1000),
-  discount      NUMBER(3),
-  startDate     DATE,
-  endDate       DATE
-);
-/
-
-------------------------------------------------------------------------
--- UZYTKOWNICY_TYP
-------------------------------------------------------------------------
-
-CREATE OR REPLACE TYPE Uzytkownik_typ AS OBJECT (
-  uzytkownik_id    NUMBER,
-  imie             VARCHAR2(50),
-  nazwisko         VARCHAR2(50),
-  email            VARCHAR2(100),
-  telefon          VARCHAR2(20),
-  typ_uzytkownika  VARCHAR2(50),
-  data_urodzenia   DATE         
+    promoId       NUMBER,
+    ref_package   REF OfertyWakacyjne_typ,
+    promoName     VARCHAR2(100),
+    promoDesc     VARCHAR2(1000),
+    discount      NUMBER(3),
+    startDate     DATE,
+    endDate       DATE
 );
 /
 

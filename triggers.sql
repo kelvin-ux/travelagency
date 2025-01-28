@@ -1,11 +1,11 @@
---TRIGGER SPRAWDZAJ¥CY POPRAWNOŒÆ WYSTAWIANIA OCENY PRZEZ U¯YTKOWNIKA
+--TRIGGER SPRAWDZAJï¿½CY POPRAWNOï¿½ï¿½ WYSTAWIANIA OCENY PRZEZ Uï¿½YTKOWNIKA
 CREATE OR REPLACE TRIGGER trg_check_ocena_hoteli
 BEFORE INSERT OR UPDATE ON OcenyHoteli_tab
 FOR EACH ROW
 DECLARE
     v_count NUMBER;
 BEGIN
-    -- Sprawdzenie, czy u¿ytkownik ma zakoñczon¹ rezerwacjê na dany hotel
+    -- Sprawdzenie, czy uï¿½ytkownik ma zakoï¿½czonï¿½ rezerwacjï¿½ na dany hotel
     SELECT COUNT(*)
     INTO v_count
     FROM Rezerwacje_tab r
@@ -15,7 +15,72 @@ BEGIN
       AND o.endDate < SYSDATE;
       
     IF v_count = 0 THEN
-        RAISE_APPLICATION_ERROR(-20001, 'U¿ytkownik musi mieæ zakoñczon¹ rezerwacjê na ten hotel, aby wystawiæ ocenê.');
+        RAISE_APPLICATION_ERROR(-20001, 'Uï¿½ytkownik musi mieï¿½ zakoï¿½czonï¿½ rezerwacjï¿½ na ten hotel, aby wystawiï¿½ ocenï¿½.');
     END IF;
 END;
 /
+
+
+------
+
+CREATE OR REPLACE TRIGGER trg_update_price_after_promotion
+AFTER INSERT OR UPDATE ON Promocje_tab
+FOR EACH ROW
+DECLARE
+    v_offer OfertyWakacyjne_typ;
+    v_new_price NUMBER;
+BEGIN
+
+    SELECT VALUE(o) INTO v_offer
+    FROM OfertyWakacyjne_tab o
+    WHERE REF(o) = :NEW.ref_package;
+    v_new_price := v_offer.original_price * (1 - :NEW.discount/100);
+    
+    DBMS_OUTPUT.PUT_LINE('Oryginalna cena: ' || v_offer.original_price);
+    DBMS_OUTPUT.PUT_LINE('ZniÅ¼ka: ' || :NEW.discount || '%');
+    DBMS_OUTPUT.PUT_LINE('Nowa cena: ' || v_new_price);
+    
+    UPDATE OfertyWakacyjne_tab o
+    SET o.price = v_new_price
+    WHERE o.packID = v_offer.packID;
+
+    DBMS_OUTPUT.PUT_LINE('Aktualizacja zakoÅ„czona');
+EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('BÅ‚Ä…d w triggerze: ' || SQLERRM);
+        RAISE;
+END;
+/
+
+CREATE OR REPLACE TRIGGER trg_restore_price_after_promotion_delete
+AFTER DELETE ON Promocje_tab
+FOR EACH ROW
+DECLARE
+    v_offer OfertyWakacyjne_typ;
+BEGIN
+
+    SELECT VALUE(o) INTO v_offer
+    FROM OfertyWakacyjne_tab o
+    WHERE REF(o) = :OLD.ref_package;
+    
+    UPDATE OfertyWakacyjne_tab o
+    SET o.price = o.original_price
+    WHERE o.packID = v_offer.packID;
+    
+    DBMS_OUTPUT.PUT_LINE('PrzywrÃ³cono oryginalnÄ… cenÄ™: ' || v_offer.original_price);
+EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('BÅ‚Ä…d w triggerze przywracania ceny: ' || SQLERRM);
+        RAISE;
+END;
+/
+
+CREATE OR REPLACE TRIGGER trg_set_original_price
+BEFORE INSERT ON OfertyWakacyjne_tab
+FOR EACH ROW
+BEGIN
+    :NEW.original_price := :NEW.price;
+END;
+/
+
+commit;

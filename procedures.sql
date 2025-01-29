@@ -196,4 +196,147 @@ CREATE OR REPLACE PACKAGE BODY pkg_travel_display AS
 END pkg_travel_display;
 /
 
+
+--  Pakiet do zarządzania rezerwacjami
+CREATE OR REPLACE PACKAGE pkg_reservation_management AS
+    PROCEDURE create_reservation(
+        p_user_id IN NUMBER,
+        p_package_id IN NUMBER,
+        p_reservation_date IN DATE DEFAULT SYSDATE,
+        p_status OUT VARCHAR2
+    );
+    
+    FUNCTION check_availability(
+        p_package_id IN NUMBER,
+        p_start_date IN DATE
+    ) RETURN BOOLEAN;
+
+    PROCEDURE cancel_reservation(
+        p_reservation_id IN NUMBER,
+        p_status OUT VARCHAR2
+    );
+    PROCEDURE generate_user_reservations_report(
+        p_user_id IN NUMBER
+    );
+END pkg_reservation_management;
+/
+
+CREATE OR REPLACE PACKAGE BODY pkg_reservation_management AS
+    PROCEDURE create_reservation(
+        p_user_id IN NUMBER,
+        p_package_id IN NUMBER,
+        p_reservation_date IN DATE DEFAULT SYSDATE,
+        p_status OUT VARCHAR2
+    ) IS
+        v_max_reservation_id NUMBER;
+        v_package_ref REF OfertyWakacyjne_typ;
+        v_user_ref REF Uzytkownik_typ;
+        v_package_available BOOLEAN;
+    BEGIN
+        SELECT REF(o) INTO v_package_ref
+        FROM OfertyWakacyjne_tab o
+        WHERE o.packID = p_package_id;
+        
+        SELECT REF(u) INTO v_user_ref
+        FROM Uzytkownicy_tab u
+        WHERE u.uzytkownik_id = p_user_id;
+        
+        SELECT NVL(MAX(rezerwacja_id), 0) + 1 INTO v_max_reservation_id
+        FROM Rezerwacje_tab;
+        
+        v_package_available := check_availability(p_package_id, p_reservation_date);
+        
+        IF v_package_available THEN
+            INSERT INTO Rezerwacje_tab VALUES (
+                Rezerwacja_typ(
+                    v_max_reservation_id,
+                    v_user_ref,
+                    v_package_ref,
+                    p_reservation_date
+                )
+            );
+            p_status := 'SUCCESS';
+            COMMIT;
+        ELSE
+            p_status := 'ERROR: Package not available';
+        END IF;
+    EXCEPTION
+        WHEN OTHERS THEN
+            p_status := 'ERROR: ' || SQLERRM;
+            ROLLBACK;
+    END create_reservation;
+    
+    FUNCTION check_availability(
+        p_package_id IN NUMBER,
+        p_start_date IN DATE
+    ) RETURN BOOLEAN IS
+        v_available NUMBER;
+    BEGIN
+        SELECT COUNT(*)
+        INTO v_available
+        FROM OfertyWakacyjne_tab o
+        WHERE o.packID = p_package_id
+        AND o.avalibitystatus = 1
+        AND o.startDate >= p_start_date;
+        
+        RETURN v_available > 0;
+    END check_availability;
+    
+    PROCEDURE cancel_reservation(
+        p_reservation_id IN NUMBER,
+        p_status OUT VARCHAR2
+    ) IS
+    BEGIN
+        DELETE FROM Rezerwacje_tab
+        WHERE rezerwacja_id = p_reservation_id;
+        
+        IF SQL%ROWCOUNT > 0 THEN
+            p_status := 'SUCCESS';
+            COMMIT;
+        ELSE
+            p_status := 'ERROR: Reservation not found';
+        END IF;
+    EXCEPTION
+        WHEN OTHERS THEN
+            p_status := 'ERROR: ' || SQLERRM;
+            ROLLBACK;
+    END cancel_reservation;
+    
+    PROCEDURE generate_user_reservations_report(
+        p_user_id IN NUMBER
+    ) IS
+        CURSOR c_reservations IS
+            SELECT r.rezerwacja_id, 
+                   o.packID, 
+                   o.price, 
+                   o.startDate, 
+                   o.endDate,
+                   h.nazwa as hotel_name,
+                   h.kraj as country
+            FROM Rezerwacje_tab r
+            JOIN OfertyWakacyjne_tab o ON REF(o) = r.ref_oferta
+            JOIN Hotele_tab h ON REF(h) = o.ref_hotel
+            JOIN Uzytkownicy_tab u ON REF(u) = r.ref_uzytkownik
+            WHERE u.uzytkownik_id = p_user_id
+            ORDER BY o.startDate;
+    BEGIN
+        DBMS_OUTPUT.PUT_LINE('=== Raport rezerwacji dla użytkownika ' || p_user_id || ' ===');
+        DBMS_OUTPUT.PUT_LINE('Data wygenerowania: ' || TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS'));
+        DBMS_OUTPUT.PUT_LINE('-----------------------------------------');
+        
+        FOR r IN c_reservations LOOP
+            DBMS_OUTPUT.PUT_LINE('Rezerwacja ID: ' || r.rezerwacja_id);
+            DBMS_OUTPUT.PUT_LINE('Oferta ID: ' || r.packID);
+            DBMS_OUTPUT.PUT_LINE('Hotel: ' || r.hotel_name || ' (' || r.country || ')');
+            DBMS_OUTPUT.PUT_LINE('Termin: ' || TO_CHAR(r.startDate, 'YYYY-MM-DD') || 
+                                ' - ' || TO_CHAR(r.endDate, 'YYYY-MM-DD'));
+            DBMS_OUTPUT.PUT_LINE('Cena: ' || r.price || ' PLN');
+            DBMS_OUTPUT.PUT_LINE('-----------------------------------------');
+        END LOOP;
+    END generate_user_reservations_report;
+END pkg_reservation_management;
+/
+
+
+
 COMMIT;

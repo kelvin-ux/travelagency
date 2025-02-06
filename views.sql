@@ -367,6 +367,102 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('Status anulowania: ' || v_status);
 END;
 /
+DECLARE
+    v_status VARCHAR2(100);
+BEGIN
+    pkg_reservation_management.create_reservation(
+        p_user_id => 1,
+        p_package_id => 2,
+        p_reservation_date => SYSDATE,
+        p_status => v_status
+    );
+    DBMS_OUTPUT.PUT_LINE('Status rezerwacji: ' || v_status);
+END;
+/
+-- Przykład próby utworzenia rezerwacji dla niedostępnej oferty
+DECLARE
+    v_status VARCHAR2(100);
+BEGIN
+    pkg_reservation_management.create_reservation(
+        p_user_id => 1,
+        p_package_id => 999,
+        p_status => v_status
+    );
+    DBMS_OUTPUT.PUT_LINE('Status rezerwacji: ' || v_status);
+END;
+/
+
+DECLARE
+    v_is_available BOOLEAN;
+BEGIN
+    v_is_available := pkg_reservation_management.check_availability(
+        p_package_id => 2,
+        p_start_date => TO_DATE('2024-07-15', 'YYYY-MM-DD')
+    );
+    
+    IF v_is_available THEN
+        DBMS_OUTPUT.PUT_LINE('Oferta jest dostępna');
+    ELSE
+        DBMS_OUTPUT.PUT_LINE('Oferta nie jest dostępna');
+    END IF;
+END;
+/
+
+
+
+BEGIN
+    pkg_reservation_management.generate_user_reservations_report(
+        p_user_id => 1 
+    );
+END;
+/
+
+
+
+DECLARE
+    v_status VARCHAR2(100);
+    v_is_available BOOLEAN;
+    v_user_id NUMBER := 1;
+    v_package_id NUMBER := 2;
+BEGIN
+    v_is_available := pkg_reservation_management.check_availability(
+        p_package_id => v_package_id,
+        p_start_date => SYSDATE
+    );
+    
+    IF v_is_available THEN
+        pkg_reservation_management.create_reservation(
+            p_user_id => v_user_id,
+            p_package_id => v_package_id,
+            p_status => v_status
+        );
+        
+        IF v_status = 'SUCCESS' THEN
+            pkg_reservation_management.generate_user_reservations_report(
+                p_user_id => v_user_id
+            );
+        ELSE
+            DBMS_OUTPUT.PUT_LINE('Błąd podczas tworzenia rezerwacji: ' || v_status);
+        END IF;
+    ELSE
+        DBMS_OUTPUT.PUT_LINE('Oferta nie jest dostępna');
+    END IF;
+END;
+/
+
+
+DECLARE
+    v_status VARCHAR2(100);
+BEGIN
+    pkg_reservation_management.create_reservation(
+        p_user_id => 3,
+        p_package_id => 1,  
+        p_reservation_date => TO_DATE('2024-06-01', 'YYYY-MM-DD'),
+        p_status => v_status
+    );
+    DBMS_OUTPUT.PUT_LINE('Status rezerwacji: ' || v_status);
+END;
+/
 
 
 DECLARE

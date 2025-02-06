@@ -5,7 +5,6 @@ FOR EACH ROW
 DECLARE
     v_count NUMBER;
 BEGIN
-    -- Sprawdzenie, czy u�ytkownik ma zako�czon� rezerwacj� na dany hotel
     SELECT COUNT(*)
     INTO v_count
     FROM Rezerwacje_tab r
@@ -21,7 +20,7 @@ END;
 /
 
 
-------
+---------------------------------------------------------------------------------------------------------
 
 CREATE OR REPLACE TRIGGER trg_update_price_after_promotion
 AFTER INSERT OR UPDATE ON Promocje_tab
@@ -52,6 +51,8 @@ EXCEPTION
 END;
 /
 
+---------------------------------------------------------------------------------------------------------
+
 CREATE OR REPLACE TRIGGER trg_restore_price_after_promotion_delete
 AFTER DELETE ON Promocje_tab
 FOR EACH ROW
@@ -75,6 +76,8 @@ EXCEPTION
 END;
 /
 
+---------------------------------------------------------------------------------------------------------
+
 CREATE OR REPLACE TRIGGER trg_set_original_price
 BEFORE INSERT ON OfertyWakacyjne_tab
 FOR EACH ROW
@@ -82,5 +85,42 @@ BEGIN
     :NEW.original_price := :NEW.price;
 END;
 /
+
+---------------------------------------------------------------------------------------------------------
+
+CREATE OR REPLACE TRIGGER trg_check_reservation_conflict
+BEFORE INSERT ON Rezerwacje_tab
+FOR EACH ROW
+DECLARE
+    v_count NUMBER;
+    v_start_date DATE;
+    v_end_date DATE;
+    v_user_id NUMBER;
+BEGIN
+    SELECT o.startDate, o.endDate
+    INTO v_start_date, v_end_date
+    FROM OfertyWakacyjne_tab o
+    WHERE REF(o) = :NEW.ref_oferta;
+    SELECT COUNT(*)
+    INTO v_count
+    FROM Rezerwacje_tab r, OfertyWakacyjne_tab o
+    WHERE r.ref_uzytkownik = :NEW.ref_uzytkownik
+    AND r.ref_oferta = REF(o)
+    AND (
+        (v_start_date BETWEEN o.startDate AND o.endDate) OR
+        (v_end_date BETWEEN o.startDate AND o.endDate)
+    );
+    
+    IF v_count > 0 THEN
+        RAISE_APPLICATION_ERROR(-20002, 'Użytkownik ma już rezerwację w tym terminie');
+    END IF;
+END;
+/
+
+---------------------------------------------------------------------------------------------------------
+
+
+
+
 
 commit;

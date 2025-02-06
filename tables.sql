@@ -1,5 +1,5 @@
 ------------------------------------------------------------------------
--- Tworzenie tabel na podstawie typów obiektowych
+-- Tworzenie tabel na podstawie typï¿½w obiektowych
 ------------------------------------------------------------------------
 -- Tabela dla typu Hotel_typ
 CREATE TABLE Hotele_tab OF Hotel_typ
@@ -18,7 +18,7 @@ CREATE TABLE OfertyWakacyjne_tab OF OfertyWakacyjne_typ
 (
     CONSTRAINT pk_oferty_wakacyjne PRIMARY KEY (packID)
 )
-NESTED TABLE atrakcje STORE AS AtrakcjeStore; -- Zagnie¿d¿ona tabela dla listy atrakcji
+NESTED TABLE atrakcje STORE AS AtrakcjeStore;
 /
 -- Tabela dla typu Promotions_typ
 CREATE TABLE Promocje_tab OF Promotions_typ
@@ -43,3 +43,4 @@ CREATE TABLE Kategorie_tab OF Kategorie_typ (
     CONSTRAINT pk_kategorie PRIMARY KEY (catId)
 )
 /
+

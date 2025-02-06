@@ -95,8 +95,8 @@ CREATE OR REPLACE TYPE OfertyWakacyjne_typ AS OBJECT (
   ref_hotel        REF Hotel_typ,
   startDate        DATE,
   endDate          DATE,
-  price            NUMBER(10,2),      -- aktualna cena (po zniżce)
-  original_price   NUMBER(10,2),      -- NOWE POLE: oryginalna cena (przed zniżką)
+  price            NUMBER(10,2),
+  original_price   NUMBER(10,2),
   opis_pakietu     VARCHAR2(2000),
   avalibitystatus  NUMBER(1),
   duration         NUMBER(5,2),
@@ -127,3 +127,4 @@ CREATE OR REPLACE TYPE Rezerwacja_typ AS OBJECT (
   data_rezerwacji  DATE
 );
 /
+

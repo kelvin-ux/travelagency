@@ -1,105 +1,106 @@
 classDiagram
-    class Uzytkownik {
-        +int uzytkownikId
-        +String imie
-        +String nazwisko
-        +String email
-        +String telefon
-        +String typUzytkownika
-        +Adres adres
-    }
+    Hotel_typ <|-- OfertyWakacyjne_typ
+    Kategorie_typ <|-- OfertyWakacyjne_typ
+    OfertyWakacyjne_typ <|-- Rezerwacja_typ
+    Uzytkownik_typ <|-- Rezerwacja_typ
+    Hotel_typ <|-- OcenaHoteli_typ
+    Uzytkownik_typ <|-- OcenaHoteli_typ
+    Adresy_typ <|-- Hotel_typ
+    Ocena_typ <|-- OcenaHoteli_typ
+    OfertyWakacyjne_typ <|-- Promotions_typ
+    ListaAtrakcje_typ <|-- OfertyWakacyjne_typ
 
-    class Adres {
+    class Adresy_typ {
+        +Number adresID
         +String ulica
-        +String nrDomu
-        +String nrMieszkania
-        +String kodPocztowy
+        +String nr_domu
+        +String nr_mieszkania
+        +String kod_pocztowy
         +String miasto
         +String kraj
     }
 
-
-    class OpisAtrakcja {
+    class Hotel_typ {
+        +Number hotelID
         +String nazwa
-        +String opis
-    }
-
-    class OpisDestynacji {
+        +String lokalizacja
         +String kraj
         +String region
-        +String opisLong
+        +CLOB opisLong
+        +Number dla_doroslych
+        +Adresy_typ adres
     }
 
-    class Ocena {
-        +int wartosc
+    class Kategorie_typ {
+        +Number catId
+        +String name
+        +CLOB opis
+        +Number allIn
+        +Number wakacjeZDziecmi
+        +Number lastMinute
+    }
+
+    class ListaAtrakcje_typ {
+        %% Reprezentuje kolekcję Atrakcja_typ (NESTED TABLE)
+        %% Zależnie od potrzeb, można dodać definicję Atrakcja_typ.
+    }
+
+    class Atrakcja_typ {
+        +Number atrakcjaID
+        +String nazwa
+        +CLOB opis_atrakcji
+    }
+
+    class OfertyWakacyjne_typ {
+        +Number packID
+        +REF Kategorie_typ ref_cat
+        +REF Hotel_typ ref_hotel
+        +Date startDate
+        +Date endDate
+        +Number price
+        +Number original_price
+        +String opis_pakietu
+        +Number avalibitystatus
+        +Number duration
+        +ListaAtrakcje_typ atrakcje
+    }
+
+    class Promotions_typ {
+        +Number promoId
+        +REF OfertyWakacyjne_typ ref_package
+        +String promoName
+        +String promoDesc
+        +Number discount
+        +Date startDate
+        +Date endDate
+    }
+
+    class Uzytkownik_typ {
+        +Number uzytkownik_id
+        +String imie
+        +String nazwisko
+        +String email
+        +String telefon
+        +String typ_uzytkownika
+        +Date data_urodzenia
+    }
+
+    class Ocena_typ {
+        +Number wartosc
         +String komentarz
         +Date data
     }
 
-    class Hotel {
-        +int hotelId
-        +int ocenaId
-        +String lokalizacja
-        +String kraj
-        +String region
-        +OpisDestynacji opisDestynacji
-        +boolean dlaDoroslych
-        +Adres adres
+    class OcenaHoteli_typ {
+        +Number ocena_id
+        +REF Uzytkownik_typ ref_uzytkownik
+        +REF Hotel_typ ref_hotel
+        +Ocena_typ ocena
     }
 
-    class OcenaHoteli {
-        +int ocenaId
-        +Uzytkownik refUzytkownik
-        +Ocena ocena
-        +String opinia
-        +Date dataOceny
+    class Rezerwacja_typ {
+        +Number rezerwacja_id
+        +REF Uzytkownik_typ ref_uzytkownik
+        +REF OfertyWakacyjne_typ ref_oferta
+        +Date data_rezerwacji
     }
-
-    class Atrakcja {
-        +int atrakcjaId
-        +OcenaHoteli refOcena
-        +OpisAtrakcja opisAtrakcji
-    }
-
-    class Kategorie {
-        +int catId
-        +String name
-        +String opis
-        +boolean allIn
-        +boolean wakacjeZDziecmi
-        +boolean lastMinute
-    }
-
-    class OfertyWakacyjne {
-        +int packId
-        +Kategorie refCat
-        +Hotel refHotel
-        +Date startDate
-        +Date endDate
-        +double price
-        +String opisPakietu
-        +boolean avalibityStatus
-        +double duration
-    }
-
-    class Promotions {
-        +int promoId
-        +OfertyWakacyjne refPackage
-        +String promoName
-        +String promoDesc
-        +double discount
-        +Date startDate
-        +Date endDate
-    }
-
-    Uzytkownik "1" --> "0..*" OcenaHoteli : "writes"
-    OcenaHoteli "0..*" --> "1" Hotel : "rates"
-    Hotel "0..*" --> "0..*" Atrakcja : "has"
-    Hotel "1" --> "0..*" OfertyWakacyjne : "offers"
-    OfertyWakacyjne "0..*" --> "1" Kategorie : "belongs to"
-    OfertyWakacyjne "0..*" --> "1" Promotions : "has"
-    Atrakcja "0..*" --> "1" OpisAtrakcja : "describes"
-    Hotel "1" --> "1" OpisDestynacji : "has"
-    OcenaHoteli "0..*" --> "1" Ocena : "includes"
-    Uzytkownik "1" --> "0..*" Adres : "has"
-    Hotel "1" --> "0..*" Adres : "has"

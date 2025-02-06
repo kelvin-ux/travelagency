@@ -275,53 +275,58 @@ INSERT INTO Promocje_tab VALUES (
     )
 );
 --REZERWACJE
--- Rezerwacja 1: Rezerwacja u�ytkownika 1 na ofert� 2
+-- Rezerwacja 1: Rezerwacja użytkownika 1 na ofertę 2
 INSERT INTO Rezerwacje_tab VALUES (
     Rezerwacja_typ(
         1, -- rezerwacja_id
         (SELECT REF(u) FROM Uzytkownicy_tab u WHERE u.uzytkownik_id = 1), -- ref_uzytkownik
         (SELECT REF(o) FROM OfertyWakacyjne_tab o WHERE o.packID = 2), -- ref_oferta
-        TO_DATE('2024-04-15', 'YYYY-MM-DD') -- data_rezerwacji
+        TO_DATE('2024-04-15', 'YYYY-MM-DD'), -- data_rezerwacji
+        (SELECT price FROM OfertyWakacyjne_tab WHERE packID = 2) -- cena_rezerwacji
     )
 );
 
--- Rezerwacja 2: Rezerwacja u�ytkownika 3 na ofert� 1
+-- Rezerwacja 2: Rezerwacja użytkownika 3 na ofertę 1
 INSERT INTO Rezerwacje_tab VALUES (
     Rezerwacja_typ(
         2, -- rezerwacja_id
         (SELECT REF(u) FROM Uzytkownicy_tab u WHERE u.uzytkownik_id = 3), -- ref_uzytkownik
         (SELECT REF(o) FROM OfertyWakacyjne_tab o WHERE o.packID = 1), -- ref_oferta
-        TO_DATE('2024-05-20', 'YYYY-MM-DD') -- data_rezerwacji
+        TO_DATE('2024-05-20', 'YYYY-MM-DD'), -- data_rezerwacji
+        (SELECT price FROM OfertyWakacyjne_tab WHERE packID = 1) -- cena_rezerwacji
     )
 );
 
--- Rezerwacja 3: Rezerwacja u�ytkownika 5 na ofert� 5
+-- Rezerwacja 3: Rezerwacja użytkownika 5 na ofertę 5
 INSERT INTO Rezerwacje_tab VALUES (
     Rezerwacja_typ(
         3, -- rezerwacja_id
         (SELECT REF(u) FROM Uzytkownicy_tab u WHERE u.uzytkownik_id = 5), -- ref_uzytkownik
         (SELECT REF(o) FROM OfertyWakacyjne_tab o WHERE o.packID = 5), -- ref_oferta
-        TO_DATE('2024-06-10', 'YYYY-MM-DD') -- data_rezerwacji
+        TO_DATE('2024-06-10', 'YYYY-MM-DD'), -- data_rezerwacji
+        (SELECT price FROM OfertyWakacyjne_tab WHERE packID = 5) -- cena_rezerwacji
     )
 );
 
--- Rezerwacja 4: Rezerwacja u�ytkownika 2 na ofert� 3
+-- Rezerwacja 4: Rezerwacja użytkownika 2 na ofertę 3
 INSERT INTO Rezerwacje_tab VALUES (
     Rezerwacja_typ(
         4, -- rezerwacja_id
         (SELECT REF(u) FROM Uzytkownicy_tab u WHERE u.uzytkownik_id = 2), -- ref_uzytkownik
         (SELECT REF(o) FROM OfertyWakacyjne_tab o WHERE o.packID = 3), -- ref_oferta
-        TO_DATE('2024-03-25', 'YYYY-MM-DD') -- data_rezerwacji
+        TO_DATE('2024-03-25', 'YYYY-MM-DD'), -- data_rezerwacji
+        (SELECT price FROM OfertyWakacyjne_tab WHERE packID = 3) -- cena_rezerwacji
     )
 );
 
--- Rezerwacja 5: Rezerwacja u�ytkownika 7 na ofert� 4
+-- Rezerwacja 5: Rezerwacja użytkownika 7 na ofertę 4
 INSERT INTO Rezerwacje_tab VALUES (
     Rezerwacja_typ(
         5, -- rezerwacja_id
         (SELECT REF(u) FROM Uzytkownicy_tab u WHERE u.uzytkownik_id = 7), -- ref_uzytkownik
         (SELECT REF(o) FROM OfertyWakacyjne_tab o WHERE o.packID = 4), -- ref_oferta
-        TO_DATE('2024-07-05', 'YYYY-MM-DD') -- data_rezerwacji
+        TO_DATE('2024-07-05', 'YYYY-MM-DD'), -- data_rezerwacji
+        (SELECT price FROM OfertyWakacyjne_tab WHERE packID = 4) -- cena_rezerwacji
     )
 );
 --OCENY
@@ -394,3 +399,5 @@ INSERT INTO OcenyHoteli_tab VALUES (
         )
     )
 );
+
+commit;

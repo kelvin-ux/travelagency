@@ -1,3 +1,8 @@
+-- WYUSZKIWARKA --
+
+
+
+
 CREATE OR REPLACE PACKAGE pkg_travel_search AS
     TYPE t_refcursor IS REF CURSOR;
     PROCEDURE search_offers(
@@ -117,6 +122,10 @@ CREATE OR REPLACE PACKAGE pkg_travel_display AS
 END pkg_travel_display;
 /
 
+
+-- WYSWIETLANIE WYNIKOW SWYSZUKIWANIA -- 
+
+
 CREATE OR REPLACE PACKAGE BODY pkg_travel_display AS
     PROCEDURE print_separator IS
     BEGIN
@@ -197,8 +206,15 @@ END pkg_travel_display;
 /
 
 
---  Pakiet do zarządzania rezerwacjami
+--  ZARZADZANIE REZERWACJAMI --
+
+
+
+
+
 CREATE OR REPLACE PACKAGE pkg_reservation_management AS
+    TYPE t_refcursor IS REF CURSOR;
+    
     PROCEDURE create_reservation(
         p_user_id IN NUMBER,
         p_package_id IN NUMBER,
@@ -215,11 +231,14 @@ CREATE OR REPLACE PACKAGE pkg_reservation_management AS
         p_reservation_id IN NUMBER,
         p_status OUT VARCHAR2
     );
+
     PROCEDURE generate_user_reservations_report(
         p_user_id IN NUMBER
     );
 END pkg_reservation_management;
 /
+
+----
 
 CREATE OR REPLACE PACKAGE BODY pkg_reservation_management AS
     PROCEDURE create_reservation(
@@ -228,12 +247,32 @@ CREATE OR REPLACE PACKAGE BODY pkg_reservation_management AS
         p_reservation_date IN DATE DEFAULT SYSDATE,
         p_status OUT VARCHAR2
     ) IS
-        v_max_reservation_id NUMBER;
         v_package_ref REF OfertyWakacyjne_typ;
         v_user_ref REF Uzytkownik_typ;
         v_package_available BOOLEAN;
+        v_user_exists NUMBER;
+        v_package_exists NUMBER;
+        v_current_price NUMBER;
     BEGIN
-        SELECT REF(o) INTO v_package_ref
+        SELECT COUNT(*) INTO v_user_exists
+        FROM Uzytkownicy_tab
+        WHERE uzytkownik_id = p_user_id;
+        
+        IF v_user_exists = 0 THEN
+            p_status := 'ERROR: User does not exist';
+            RETURN;
+        END IF;
+        
+        SELECT COUNT(*) INTO v_package_exists
+        FROM OfertyWakacyjne_tab
+        WHERE packID = p_package_id;
+        
+        IF v_package_exists = 0 THEN
+            p_status := 'ERROR: Package does not exist';
+            RETURN;
+        END IF;
+        
+        SELECT REF(o), o.price INTO v_package_ref, v_current_price
         FROM OfertyWakacyjne_tab o
         WHERE o.packID = p_package_id;
         
@@ -241,18 +280,16 @@ CREATE OR REPLACE PACKAGE BODY pkg_reservation_management AS
         FROM Uzytkownicy_tab u
         WHERE u.uzytkownik_id = p_user_id;
         
-        SELECT NVL(MAX(rezerwacja_id), 0) + 1 INTO v_max_reservation_id
-        FROM Rezerwacje_tab;
-        
         v_package_available := check_availability(p_package_id, p_reservation_date);
         
         IF v_package_available THEN
             INSERT INTO Rezerwacje_tab VALUES (
                 Rezerwacja_typ(
-                    v_max_reservation_id,
+                    NULL,
                     v_user_ref,
                     v_package_ref,
-                    p_reservation_date
+                    p_reservation_date,
+                    v_current_price
                 )
             );
             p_status := 'SUCCESS';
@@ -261,6 +298,12 @@ CREATE OR REPLACE PACKAGE BODY pkg_reservation_management AS
             p_status := 'ERROR: Package not available';
         END IF;
     EXCEPTION
+        WHEN DUP_VAL_ON_INDEX THEN
+            p_status := 'ERROR: Duplicate reservation';
+            ROLLBACK;
+        WHEN NO_DATA_FOUND THEN
+            p_status := 'ERROR: Required data not found';
+            ROLLBACK;
         WHEN OTHERS THEN
             p_status := 'ERROR: ' || SQLERRM;
             ROLLBACK;
@@ -281,7 +324,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_reservation_management AS
         
         RETURN v_available > 0;
     END check_availability;
-    
+
     PROCEDURE cancel_reservation(
         p_reservation_id IN NUMBER,
         p_status OUT VARCHAR2
@@ -301,7 +344,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_reservation_management AS
             p_status := 'ERROR: ' || SQLERRM;
             ROLLBACK;
     END cancel_reservation;
-    
+
     PROCEDURE generate_user_reservations_report(
         p_user_id IN NUMBER
     ) IS
@@ -312,7 +355,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_reservation_management AS
                    o.startDate, 
                    o.endDate,
                    h.nazwa as hotel_name,
-                   h.kraj as country
+                   h.kraj as country,
+                   r.cena_rezerwacji
             FROM Rezerwacje_tab r
             JOIN OfertyWakacyjne_tab o ON REF(o) = r.ref_oferta
             JOIN Hotele_tab h ON REF(h) = o.ref_hotel
@@ -330,7 +374,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_reservation_management AS
             DBMS_OUTPUT.PUT_LINE('Hotel: ' || r.hotel_name || ' (' || r.country || ')');
             DBMS_OUTPUT.PUT_LINE('Termin: ' || TO_CHAR(r.startDate, 'YYYY-MM-DD') || 
                                 ' - ' || TO_CHAR(r.endDate, 'YYYY-MM-DD'));
-            DBMS_OUTPUT.PUT_LINE('Cena: ' || r.price || ' PLN');
+            DBMS_OUTPUT.PUT_LINE('Cena w momencie rezerwacji: ' || r.cena_rezerwacji || ' PLN');
+            DBMS_OUTPUT.PUT_LINE('Aktualna cena oferty: ' || r.price || ' PLN');
             DBMS_OUTPUT.PUT_LINE('-----------------------------------------');
         END LOOP;
     END generate_user_reservations_report;

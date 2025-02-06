@@ -1,5 +1,5 @@
 BEGIN
-    -- Usuniêcie tabel zagnie¿d¿onych najpierw
+    -- Usuniï¿½cie tabel zagnieï¿½dï¿½onych najpierw
     EXECUTE IMMEDIATE 'DROP TABLE OfertyWakacyjne_tab CASCADE CONSTRAINTS';
     EXECUTE IMMEDIATE 'DROP TABLE OcenyHoteli_tab CASCADE CONSTRAINTS';
     EXECUTE IMMEDIATE 'DROP TABLE Promocje_tab CASCADE CONSTRAINTS';
@@ -11,8 +11,7 @@ BEGIN
     EXECUTE IMMEDIATE 'DROP TABLE Adresy_tab CASCADE CONSTRAINTS';
 EXCEPTION
     WHEN OTHERS THEN
-        IF SQLCODE != -942 THEN -- ORA-00942: table or view does not exist
+        IF SQLCODE != -942 THEN
             RAISE;
         END IF;
-        -- Jeœli tabela nie istnieje, kontynuuj
 END;

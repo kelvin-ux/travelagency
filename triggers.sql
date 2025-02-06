@@ -1,4 +1,5 @@
 --TRIGGER SPRAWDZAJ�CY POPRAWNO�� WYSTAWIANIA OCENY PRZEZ U�YTKOWNIKA
+
 CREATE OR REPLACE TRIGGER trg_check_ocena_hoteli
 BEFORE INSERT OR UPDATE ON OcenyHoteli_tab
 FOR EACH ROW
@@ -120,7 +121,40 @@ END;
 ---------------------------------------------------------------------------------------------------------
 
 
+CREATE SEQUENCE seq_rezerwacja_id
+    START WITH 1
+    INCREMENT BY 1
+    NOCACHE
+    NOCYCLE;
+/
 
+
+CREATE OR REPLACE TRIGGER trg_rezerwacja_id_gen
+BEFORE INSERT ON Rezerwacje_tab
+FOR EACH ROW
+BEGIN
+    IF :NEW.rezerwacja_id IS NULL THEN
+        SELECT seq_rezerwacja_id.NEXTVAL 
+        INTO :NEW.rezerwacja_id 
+        FROM dual;
+    END IF;
+END;
+/
+---------------------------------------------------------------------------------------------------------
+
+CREATE OR REPLACE TRIGGER trg_set_reservation_price
+BEFORE INSERT ON Rezerwacje_tab
+FOR EACH ROW
+DECLARE
+    v_current_price NUMBER;
+BEGIN
+    SELECT o.price INTO v_current_price
+    FROM OfertyWakacyjne_tab o
+    WHERE REF(o) = :NEW.ref_oferta;
+
+    :NEW.cena_rezerwacji := v_current_price;
+END;
+/
 
 
 commit;

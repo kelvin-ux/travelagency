@@ -121,10 +121,10 @@ CREATE OR REPLACE TYPE Promotions_typ AS OBJECT (
 ------------------------------------------------------------------------
 
 CREATE OR REPLACE TYPE Rezerwacja_typ AS OBJECT (
-  rezerwacja_id    NUMBER,
-  ref_uzytkownik   REF Uzytkownik_typ,
-  ref_oferta       REF OfertyWakacyjne_typ,
-  data_rezerwacji  DATE
+    rezerwacja_id    NUMBER,
+    ref_uzytkownik   REF Uzytkownik_typ,
+    ref_oferta       REF OfertyWakacyjne_typ,
+    data_rezerwacji  DATE,
+    cena_rezerwacji  NUMBER  
 );
 /
-
